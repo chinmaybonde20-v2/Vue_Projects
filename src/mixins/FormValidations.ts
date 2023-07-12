@@ -30,4 +30,3 @@ function containsDigit(value: string): boolean {
 
 
 export { name, dueDate, description, isNameValid, isDueDateValid, isDescriptionValid, isFormValid };
-
