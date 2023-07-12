@@ -26,8 +26,8 @@ export default createStore<State>({
     },
   },
   mutations: {
-    setAuth(state, payload) {
-      state.isLoggedIn = payload;
+    setAuth(state, loginStatus) {
+      state.isLoggedIn = loginStatus;
     },
     setUser(state, user) {
       state.user = user;
