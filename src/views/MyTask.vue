@@ -72,7 +72,7 @@
         </div>
 
         <div class="task-cards-container row">
-          <div class="card m-1" v-for="task in tasks" :key="task.id">
+          <div class="card m-1" v-for="task in paginatedTasks" :key="task.id">
             <div class="card-body">
               <div class="task-header row">
                 <div class="col">
@@ -115,8 +115,57 @@
       </div>
     </div>
   </div>
-  <div v-if="isLoggedIn" class="completed-task">
+  <!-- <div v-if="isLoggedIn" class="completed-task">
     <CompletedTask />
+  </div> -->
+
+  <!-- Pagination -->
+  <div class="pagination-btn">
+    <div class="pagination">
+      <button
+        class="btn btn-primary"
+        @click="goToFirstPage"
+        :disabled="currentPage === 1"
+      >
+        First Page
+      </button>
+      <button
+        class="btn btn-primary"
+        @click="prevPage"
+        :disabled="currentPage === 1"
+      >
+        Prev
+      </button>
+      <span class="page-of">{{ `Page ${currentPage} of ${totalPages}` }}</span>
+      <button
+        class="btn btn-primary"
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+      >
+        Next
+      </button>
+      <button
+        class="btn btn-primary"
+        @click="goToLastPage"
+        :disabled="currentPage === totalPages"
+      >
+        Last Page
+      </button>
+    </div>
+    <!-- Tasks per page -->
+    <div class="task-per-page-links">
+      <p>Tasks per page:</p>
+      <a
+        href="#"
+        :class="{ active: tasksPerPage === item }"
+        v-for="item in pageItems"
+        :key="item"
+        @click.prevent="setTasksPerPage(item)"
+        class="card-per-page"
+      >
+        {{ item }}
+      </a>
+    </div>
   </div>
 </template>
 
@@ -136,8 +185,69 @@ import {
 } from "@/mixins/FormValidations.ts";
 
 const store = useStore();
-const tasks = ref([]);
-const taskId = ref(1);
+const tasks = ref([
+  {
+    id: 1,
+    name: "Activity 1",
+    dueDate: "2023-07-15",
+    description: "Complete activity 1",
+  },
+  {
+    id: 2,
+    name: "Activity 2",
+    dueDate: "2023-07-20",
+    description: "Complete activity 2",
+  },
+  {
+    id: 3,
+    name: "Activity 3",
+    dueDate: "2023-07-25",
+    description: "Complete activity 3",
+  },
+  {
+    id: 4,
+    name: "Activity 4",
+    dueDate: "2023-07-30",
+    description: "Complete activity 4",
+  },
+  {
+    id: 5,
+    name: "Activity 5",
+    dueDate: "2023-08-05",
+    description: "Complete activity 5",
+  },
+  {
+    id: 6,
+    name: "Activity 6",
+    dueDate: "2023-08-10",
+    description: "Complete activity 6",
+  },
+  {
+    id: 7,
+    name: "Activity 7",
+    dueDate: "2023-08-15",
+    description: "Complete activity 7",
+  },
+  {
+    id: 8,
+    name: "Activity 8",
+    dueDate: "2023-08-20",
+    description: "Complete activity 8",
+  },
+  {
+    id: 9,
+    name: "Activity 9",
+    dueDate: "2023-08-25",
+    description: "Complete activity 9",
+  },
+  {
+    id: 10,
+    name: "Activity 10",
+    dueDate: "2023-08-30",
+    description: "Complete activity 10",
+  },
+]);
+const taskId = ref(11);
 const showForm = ref(false);
 const editMode = ref(false);
 const editIndex = ref(-1);
@@ -182,6 +292,7 @@ const updateTask = () => {
   task.dueDate = dueDate.value;
   task.description = description.value;
 };
+
 const daysLeft = (task) => {
   const dueDate = new Date(task.dueDate);
   const currentDate = new Date();
@@ -214,21 +325,53 @@ const editTask = (taskId) => {
     showForm.value = true;
   }
 };
+
 const resetForm = () => {
   name.value = "";
   dueDate.value = "";
   description.value = "";
 };
+// Pagination
+const tasksPerPageOptions = [4, 8, 12];
+const tasksPerPage = ref(tasksPerPageOptions[0]);
+const currentPage = ref(1);
+const totalTasks = computed(() => tasks.value.length);
+const totalPages = computed(() =>
+  Math.ceil(totalTasks.value / tasksPerPage.value)
+);
+
+const paginatedTasks = computed(() => {
+  const startIndex = (currentPage.value - 1) * tasksPerPage.value;
+  const endIndex = startIndex + tasksPerPage.value;
+  return tasks.value.slice(startIndex, endIndex);
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+const goToFirstPage = () => {
+  currentPage.value = 1;
+};
+
+const goToLastPage = () => {
+  currentPage.value = totalPages.value;
+};
+const pageItems = [4, 8, 12];
+
+const setTasksPerPage = (perPage) => {
+  tasksPerPage.value = perPage;
+  currentPage.value = 1;
+};
 </script>
 
 <style scoped>
-.is-invalid {
-  border-color: red !important;
-}
-
-.error-message {
-  color: red;
-  font-size: 12px;
-  margin-top: 4px;
-}
+/* Styles... */
 </style>

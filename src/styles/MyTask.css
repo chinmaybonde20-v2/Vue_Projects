@@ -29,6 +29,7 @@
   .task-cards-container .card {
     margin-bottom: 10px;
     width: 310px;
+
   }
   
   .task-actions {
@@ -54,4 +55,50 @@
     margin: 30px;
     border: 1px solid;
     border-color: green;
+  }
+  .card-per-page{
+    margin-left: 10px;
+  }
+  .pagination-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #d4d2d2;
+    border-radius: 4px;
+  }
+  .pagination-btn button {
+    margin-right: 10px;
+  }
+  .task-per-page-links .card-per-page {
+    margin-left: 10px;
+  }
+  .pagination {
+    display: flex;
+    align-items: center;
+  }
+  
+  .task-per-page-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .task-per-page-links p {
+    margin-right: 10px;
+  }
+  .page-of{
+    margin: 10px;
+  }
+  .card-per-page {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .card-per-page.active {
+    background-color: #337ab7;
+    color: #fff;
   }
