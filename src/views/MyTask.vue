@@ -2,14 +2,30 @@
   <div>
     <h4 v-if="!isLoggedIn" class="login-text">Please Login</h4>
     <div v-else class="task-container">
-      <div class="task-header">
+      <!-- Add button -->
+      <div
+        class="task-header d-flex align-items-center justify-content-between"
+      >
         <button class="btn btn-primary" @click="openForm">Add Task</button>
+        <!-- Search Bar -->
+        <div class="search-container d-flex align-items-center">
+          <input
+            type="text"
+            class="form-control search-input"
+            placeholder="Search tasks..."
+            v-model.trim="searchTerm"
+            @input="searchTasks"
+          />
+          <button class="btn btn-primary search-btn" @click="clearSearch">
+            Clear
+          </button>
+        </div>
       </div>
 
       <div class="task-list">
         <div>
           <h5>To Do List:</h5>
-        </div>
+        </div> 
 
         <div class="task-form-container" v-if="showForm">
           <form @submit="submitTask" class="task-form">
@@ -188,61 +204,61 @@ const store = useStore();
 const tasks = ref([
   {
     id: 1,
-    name: "Activity 1",
+    name: "Vue.js",
     dueDate: "2023-07-15",
-    description: "Complete activity 1",
+    description: "Complete activity",
   },
   {
     id: 2,
-    name: "Activity 2",
+    name: "Angular",
     dueDate: "2023-07-20",
     description: "Complete activity 2",
   },
   {
     id: 3,
-    name: "Activity 3",
+    name: "JavaScript",
     dueDate: "2023-07-25",
     description: "Complete activity 3",
   },
   {
     id: 4,
-    name: "Activity 4",
+    name: "Python",
     dueDate: "2023-07-30",
     description: "Complete activity 4",
   },
   {
     id: 5,
-    name: "Activity 5",
+    name: "Java",
     dueDate: "2023-08-05",
     description: "Complete activity 5",
   },
   {
     id: 6,
-    name: "Activity 6",
+    name: "C++",
     dueDate: "2023-08-10",
     description: "Complete activity 6",
   },
   {
     id: 7,
-    name: "Activity 7",
+    name: "CSS",
     dueDate: "2023-08-15",
     description: "Complete activity 7",
   },
   {
     id: 8,
-    name: "Activity 8",
+    name: "C#",
     dueDate: "2023-08-20",
     description: "Complete activity 8",
   },
   {
     id: 9,
-    name: "Activity 9",
+    name: "Ruby",
     dueDate: "2023-08-25",
     description: "Complete activity 9",
   },
   {
     id: 10,
-    name: "Activity 10",
+    name: "React",
     dueDate: "2023-08-30",
     description: "Complete activity 10",
   },
@@ -331,11 +347,34 @@ const resetForm = () => {
   dueDate.value = "";
   description.value = "";
 };
-// Pagination
+
+// Search functionality
+const searchTerm = ref("");
+const searchTasks = () => {
+  updatePaginatedTasks();
+};
+
+const clearSearch = () => {
+  searchTerm.value = "";
+  updatePaginatedTasks();
+};
+
+const filteredTasks = computed(() => {
+  const search = searchTerm.value.toLowerCase().trim();
+  if (!search) {
+    return tasks.value;
+  }
+  return tasks.value.filter((task) => {
+    const taskName = task.name.toLowerCase();
+    const taskDescription = task.description.toLowerCase();
+    return taskName.includes(search) || taskDescription.includes(search);
+  });
+});
+
 const tasksPerPageOptions = [4, 8, 12];
 const tasksPerPage = ref(tasksPerPageOptions[0]);
 const currentPage = ref(1);
-const totalTasks = computed(() => tasks.value.length);
+const totalTasks = computed(() => filteredTasks.value.length);
 const totalPages = computed(() =>
   Math.ceil(totalTasks.value / tasksPerPage.value)
 );
@@ -343,8 +382,15 @@ const totalPages = computed(() =>
 const paginatedTasks = computed(() => {
   const startIndex = (currentPage.value - 1) * tasksPerPage.value;
   const endIndex = startIndex + tasksPerPage.value;
-  return tasks.value.slice(startIndex, endIndex);
+  return filteredTasks.value.slice(startIndex, endIndex);
 });
+
+const updatePaginatedTasks = () => {
+  currentPage.value = 1;
+  const startIndex = (currentPage.value - 1) * tasksPerPage.value;
+  const endIndex = startIndex + tasksPerPage.value;
+  paginatedTasks.value = filteredTasks.value.slice(startIndex, endIndex);
+};
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
@@ -357,6 +403,7 @@ const prevPage = () => {
     currentPage.value--;
   }
 };
+
 const goToFirstPage = () => {
   currentPage.value = 1;
 };
@@ -364,12 +411,15 @@ const goToFirstPage = () => {
 const goToLastPage = () => {
   currentPage.value = totalPages.value;
 };
+
 const pageItems = [4, 8, 12];
 
 const setTasksPerPage = (perPage) => {
   tasksPerPage.value = perPage;
   currentPage.value = 1;
 };
+
+updatePaginatedTasks();
 </script>
 
 <style scoped>

@@ -28,7 +28,7 @@
   
   .task-cards-container .card {
     margin-bottom: 10px;
-    width: 310px;
+    width: 300px;
 
   }
   
@@ -102,3 +102,5 @@
     background-color: #337ab7;
     color: #fff;
   }
+
+  
